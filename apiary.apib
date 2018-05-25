@@ -1,0 +1,176 @@
+FORMAT: 1A
+HOST: https://dev-penn-admissions-undergrad.pantheonsite.io
+
+# Penn Admissions
+
+Summary of all Penn Admissions API endpoints.
+
+## Database Session Interaction [/db_session]
+Custom functionality for database session interaction is set up in a custom module located at `modules/custom/db_session`. The following endpoints are defined within that module:
+
+### Create or Validate Database Session [POST /db_session{?uuid}]
+The initial call to the API creates a database session within Drupal and returns the UUID of that session.
+
++ Parameters
+  + uuid: `986eed3f-ca1b-4ee3-8a27-637863de785b` (string, optional) - The UUID of the session to validate.
+        
++ Response 200 (application/json)
+
+        "986eed3f-ca1b-4ee3-8a27-637863de785b"
+        
+        
+### Read Database Session Data [POST /db_session/{uuid}]
+Returns a structured data object representing the Drupal database state.
+
++ Parameters
+  + uuid: `986eed3f-ca1b-4ee3-8a27-637863de785b` (string) - The UUID of the session to retrieve.
+  
++ Response 200 (application/json)
+
+    + Attributes (array[Session Base])
+        
+### Add Database Session Data [POST /db_session/{uuid}/add/{data_type_machine_name}/{data}]
+Adds data to the Drupal database state and returns a structured data object representing the new state
+
++ Parameters
+  + uuid: `986eed3f-ca1b-4ee3-8a27-637863de785b` (string) - The UUID of the session to modify
+  + data_type_machine_name: interests (string) - The machine name of the data type to add
+  + data: 3 (string) - The value to add to the session
+  
++ Response 200 (application/json)
+
+    + Attributes (array[Session Base])
+        
+### Delete Database Session Data [POST /db_session/{uuid}/delete/{data_type_machine_name}/{data}]
+Deletes data from the Drupal database state and returns a structured data object representing the new state
+
++ Parameters
+  + uuid (string) - The UUID of the session to modify
+  + data_type_machine_name (string) - The machine name of the data type to remove
+  + data: 3 (string) - The value to delete from the session
+  
++ Response 200 (application/json)
+
+    + Attributes (array[Session Base])
+
+## Serialized Content [/]
+
+### Get all "Interest" content [GET /interests/json/{?tid}]
+Returns a serialized list of "Interest" taxonomy terms.
+
++ Parameters
+  + tid: 3 (string, optional) - The specific interest TID to retrieve. Separate multiple TIDs with a comma.
+
++ Response 200 (application/json)
+
+        [
+            {"tid": 1, "name": "foo"},
+            {"tid": 2, "name": "bar"},
+            {"tid": 3, "name": "bin"}
+        ]
+        
++ Request GET /interests/json/3
+        
++ Response 200 (application/json)
+
+        [
+            {"tid": 3, "name": "bin"}
+        ]
+        
++ Request GET /interests/json/1,3
+        
++ Response 200 (application/json)
+
+        [
+            {"tid": 1, "name": "foo"},
+            {"tid": 3, "name": "bin"}
+        ]
+        
+### Get all "Opportunity" content [GET /opportunities-list/json]
+Returns a list of serialized "Opportunity" content.
+
++ Response 200 (application/json)
+
+        [
+            {
+                "nid": "100",
+                "title": "first opportunity",
+                "field_see_more_interests": "1, 2",
+                "image": ""
+            },
+            {
+                "nid": "101",
+                "title": "second opportunity",
+                "field_see_more_interests": "3",
+                "image": "https:\/\/dev-penn-admissions-undergrad.pantheonsite.io\/sites\/default\/files\/styles\/600x120_crop_scale\/public/opportunity_images\/2018-04\/101.jpg?h=jv95j382&amp;itok=qm84mR93"
+            }
+        ]
+    
+### Get all "Story" content [GET /stories/json/{?nid}]
+Returns a list of serialized "Story" content.
+
++ Parameters
+  + nid: 200 (string, optional) - The specific story NID to retrieve. Separate multiple NIDs with a comma.
+
++ Response 200 (application/json)
+
+        [
+            {
+                "nid": "200",
+                "title": "Simon Michael",
+                "field_story_teaser_image": "http:\/\/dev-penn-admissions-undergrad.pantheonsite.io\/sites\/default\/files\/styles\/513x513_crop_and_scale\/public\/story_teaser_images\/2018-04\/simon-michael-teaser-image-sm.jpg?h=d2fba480\u0026amp;itok=8MQaS-fP",
+                "field_journey_statements": "",
+                "field_teaser_journey_statement": "",
+                "field_interested_in_the_journey": "1,2",
+                "field_first_name": "Simon\u0026#039;s"
+            },
+            {
+                "nid": "201",
+                "title": "Kassandra Andrews",
+                "field_story_teaser_image": "http:\/\/dev-penn-admissions-undergrad.pantheonsite.io\/sites\/default\/files\/styles\/513x513_crop_and_scale\/public\/story_teaser_images\/2018-04\/kassandra-andrews-teaser-image-sm.jpg?h=d2fba480\u0026amp;itok=8MQaS-fP",
+                "field_journey_statements": "combining her interest in business and passion for nonprofits |volunteering in South Philadelphia",
+                "field_teaser_journey_statement": "Kassandra was interested in leadership. At Penn, she\u0026#039;s",
+                "field_interested_in_the_journey": "3",
+                "field_first_name": "Kassandra\u0026#039;s"
+            },
+            {
+                "nid": "202",
+                "title": "Charissa Hartlieb",
+                "field_story_teaser_image": "http:\/\/dev-penn-admissions-undergrad.pantheonsite.io\/sites\/default\/files\/styles\/513x513_crop_and_scale\/public\/story_teaser_images\/2018-04\/charissa-hartlieb-teaser-image-sm.jpg?h=d2fba480\u0026amp;itok=8MQaS-fP",
+                "field_journey_statements": "channeling her passion for performing arts|tutoring in West Philly",
+                "field_teaser_journey_statement": "Charissa was interested in community outreach. At Penn, she\u0026#039;s",
+                "field_interested_in_the_journey": "2,3",
+                "field_first_name": "Charissa\u0026#039;s"
+            }
+        ]
+        
++ Request GET /stories/json/202
+        
++ Response 200 (application/json)
+
+        [
+            {
+                "nid": "202",
+                "title": "Charissa Hartlieb",
+                "field_story_teaser_image": "http:\/\/dev-penn-admissions-undergrad.pantheonsite.io\/sites\/default\/files\/styles\/513x513_crop_and_scale\/public\/story_teaser_images\/2018-04\/charissa-hartlieb-teaser-image-sm.jpg?h=d2fba480\u0026amp;itok=8MQaS-fP",
+                "field_journey_statements": "channeling her passion for performing arts|tutoring in West Philly",
+                "field_teaser_journey_statement": "Charissa was interested in community outreach. At Penn, she\u0026#039;s",
+                "field_interested_in_the_journey": "2,3",
+                "field_first_name": "Charissa\u0026#039;s"
+            }
+        ]
+
+# Data Structures
+
+## Session Base (object)
++ uuid: `986eed3f-ca1b-4ee3-8a27-637863de785b` (string)
+    The UUID of the session object
+    
++ last_accessed: 1527106715 (number)
+    Unix timestamp of the last time this session was modified
+    
++ interests: 1,2 (array[string])
+    A list of interest TIDs that the user has selected
+    
++ visited_pages: 13,14 (array[string])
+    A list of page NIDs that the user has visited
